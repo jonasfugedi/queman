@@ -61,6 +61,7 @@
             <th>Name</th>
             <th>Size</th>
             <th>Current</th>
+            <th>Ticket view</th>
         </tr>
         </thead>
         {#if queues}
@@ -77,6 +78,7 @@
                             queue.current.ticketNumber
                         {/if}
                     </td>
+                    <Link to="/customer/{queue.id}"> ticket </Link>
                 </tr>
             {/each}
             </tbody>
