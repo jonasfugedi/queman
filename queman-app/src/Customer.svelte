@@ -29,14 +29,7 @@
         console.log("Got ticket: ", ticket)
     }
 
-
-    export const currentTicketNumber = writable(0);
-    let events = [];
-    let current_ticket_value;
-
-    currentTicketNumber.subscribe(value => {
-        current_ticket_value = value;
-    });
+    const nowServingTicket = writable(0);
 
     function subscribeToEvents() {
         console.log('Subscribing')
@@ -51,8 +44,8 @@
             };
             evtSource.addEventListener("QUEUE_UPDATE", function (event) {
                 console.log("Received event", event);
-                // currentTicketNumber = event.lastEventId;
-                currentTicketNumber.set(event.lastEventId);
+                let value = parseInt(event.lastEventId, 10);
+                nowServingTicket.set(value);
             });
             console.log('Event source configured for queue: ' + queueId);
         } else {
@@ -60,32 +53,41 @@
         }
 
     }
+
 </script>
 
 <div>
     {#if !ticket}
-        <h1>Getting ticket ... </h1>
+        <h1> Getting ticket ... </h1>
     {:else }
-        <h1 class="{ (current_ticket_value === ticket.ticketNumber) ? 'customersTurn' : 'waiting' }">
-            {ticket.ticketNumber}
+        {#if (ticket.ticketNumber === $nowServingTicket)}
+            <h1 class="customersTurn">
+                Your turn!
+            </h1>
+        {/if}
+        <h1>
+            Your number: {ticket.ticketNumber}
         </h1>
+        <div>
+            Current number: {$nowServingTicket}
+        </div>
     {/if}
-    <div>
-        <b> Current ticket number: {current_ticket_value} </b>
-        <ul>
-            {#each events as event}
-                <li> {JSON.stringify(event) } </li>
-            {/each}
-        </ul>
-    </div>
 
 </div>
 
 <style>
     .customersTurn {
         background-color: bisque;
+        animation: blinker 1s step-start infinite;
     }
+
     .waiting {
         background-color: #f4f4f4;
+    }
+
+    @keyframes blinker {
+        50% {
+            opacity: 0;
+        }
     }
 </style>
