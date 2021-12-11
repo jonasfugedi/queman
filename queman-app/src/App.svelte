@@ -9,6 +9,7 @@
 
     export let name;
     export let url = '';
+    export let serverUrl = 'http://localhost:8080/api';
     export let customerId;
 
     const CUSTOMER_ID_KEY = 'customerId';
@@ -28,13 +29,13 @@
 <Router url="{url}">
     <div>
         <Route path="queue/:queueId" let:params>
-            <Display queueId="{params.queueId}"/>
+            <Display queueId="{params.queueId}" {serverUrl}/>
         </Route>
-        <Route path="admin" component="{Admin}"/>
+        <Route path="admin" component="{Admin}" {serverUrl}/>
         <Route path="customer/:queueId" let:params>
-            <Customer queueId="{params.queueId}"/>
+            <Customer queueId="{params.queueId}" {serverUrl}/>
         </Route>
-        <Route path="cashier" component="{Cashier}"/>
+        <Route path="cashier" component="{Cashier}" {serverUrl}/>
         <Route path="/">
             <main>
                 <h1>{name}</h1>

@@ -4,7 +4,7 @@
     import {Link} from "svelte-routing";
 
     const OWNER_ID_KEY = 'ownerId';
-
+    export let serverUrl;
     export let ownerId;
     export let queues;
 
@@ -23,7 +23,7 @@
     export let name;
 
     async function createQueue() {
-        const res = await fetch('http://localhost:8080/queues', {
+        const res = await fetch(`${serverUrl}/queues`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -41,7 +41,7 @@
 
     async function loadQueues() {
         console.log("Loading queues", ownerId)
-        const res = await fetch(`http://localhost:8080/queues?ownerId=${ownerId}`);
+        const res = await fetch(`${serverUrl}/queues?ownerId=${ownerId}`);
         queues = await res.json();
         console.log("Loaded queues: ", queues)
     }
@@ -75,7 +75,7 @@
                     <td> {queue.size} </td>
                     <td>
                         {#if queue.current}
-                            queue.current.ticketNumber
+                            {queue.current.ticketNumber}
                         {/if}
                     </td>
                     <Link to="/customer/{queue.id}"> ticket </Link>

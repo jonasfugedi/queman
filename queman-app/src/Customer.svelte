@@ -1,14 +1,16 @@
 <script>
-    import {onMount} from "svelte";
-    import {v4 as uuidv4} from "uuid";
+    import {onMount} from 'svelte';
+    import {writable} from 'svelte/store';
+    import {v4 as uuidv4} from 'uuid';
 
+    export let serverUrl;
     export let queueId;
     let customerId;
     let ticket;
 
     const CUSTOMER_ID_KEY = 'customerId';
 
-    import {writable} from 'svelte/store';
+    const nowServingTicket = writable(0);
 
     onMount(async () => {
         if (!localStorage.getItem(CUSTOMER_ID_KEY)) {
@@ -24,16 +26,18 @@
 
     async function takeTicket() {
         console.log("Getting ticket", queueId)
-        const res = await fetch(`http://localhost:8080/ticket?customerId=${customerId}&queueId=${queueId}`);
+        const res = await fetch(`${serverUrl}/ticket?customerId=${customerId}&queueId=${queueId}`);
         ticket = await res.json();
         console.log("Got ticket: ", ticket)
+        const res2 = await fetch(`${serverUrl}/currentTicketNumber?queueId=${queueId}`);
+        const res2Text = await res2.text();
+        console.log("Current ticket number response text:", res2Text);
+        $nowServingTicket = parseInt(res2Text, 10);
     }
-
-    const nowServingTicket = writable(0);
 
     function subscribeToEvents() {
         console.log('Subscribing')
-        let evtSource = new EventSource(`http://localhost:8080/subscribe?queueId=${queueId}`);
+        let evtSource = new EventSource(`${serverUrl}/subscribe?queueId=${queueId}`);
         if (evtSource) {
             console.log('Subscribed', evtSource);
             evtSource.onopen = () => {

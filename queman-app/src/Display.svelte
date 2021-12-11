@@ -2,12 +2,13 @@
 
     import {onMount} from "svelte";
 
+    export let serverUrl;
     export let queueId;
     export let queue;
 
     onMount(async () => {
         console.log('Subscribing')
-        const evtSource = new EventSource(`http://localhost:8080/subscribe?queueId=${queueId}`);
+        const evtSource = new EventSource(`${serverUrl}/subscribe?queueId=${queueId}`);
         if (evtSource) {
             console.log(evtSource)
             evtSource.onmessage = function (event) {
@@ -26,14 +27,14 @@
 
     async function loadQueue() {
         console.log("Loading queue", queueId)
-        const res = await fetch(`http://localhost:8080/queue?queueId=${queueId}`);
+        const res = await fetch(`${serverUrl}/queue?queueId=${queueId}`);
         queue = await res.json();
         console.log("Loaded queue: ", queue)
     }
 
     async function nextTicket() {
         console.log("Next", queueId)
-        const response = await fetch(`http://localhost:8080/next?queueId=${queueId}`);
+        const response = await fetch(`${serverUrl}/next?queueId=${queueId}`);
         // TODO: Check result
         if (!response.ok) {
             if (response.status === 404) {
@@ -54,7 +55,7 @@
         console.log("Getting ticket", queueId)
         const customerId = 'me-' + counter;
         counter = counter + 1;
-        const res = await fetch(`http://localhost:8080/ticket?customerId=${customerId}&queueId=${queueId}`);
+        const res = await fetch(`${serverUrl}/ticket?customerId=${customerId}&queueId=${queueId}`);
         var ticket = await res.json();
         console.log("Got ticket: ", ticket)
         loadQueue();

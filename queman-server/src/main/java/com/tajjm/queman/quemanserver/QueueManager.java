@@ -12,6 +12,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.*;
 
 @RestController
+@RequestMapping("api")
 @CrossOrigin
 public class QueueManager {
     private static final Logger log = LoggerFactory.getLogger(QueueManager.class);
@@ -77,6 +78,16 @@ public class QueueManager {
         return ResponseEntity.ok().body(customerQueue.getCustomerTicket(customerId));
     }
 
+    @GetMapping("/currentTicketNumber")
+    ResponseEntity<Integer> getCurrentTicketNumber(@RequestParam String queueId) {
+        CustomerQueue customerQueue = customerQueueMap.get(queueId);
+        if (customerQueue == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return customerQueue.getCurrent()
+                .map(ticket -> ResponseEntity.ok().body(ticket.getTicketNumber()))
+                .orElse(ResponseEntity.notFound().build());
+    }
 
     @GetMapping("/subscribe")
     SseEmitter subscribe(@RequestParam String queueId) {
