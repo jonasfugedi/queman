@@ -32,7 +32,9 @@
         const res2 = await fetch(`${serverUrl}/currentTicketNumber?queueId=${queueId}`);
         const res2Text = await res2.text();
         console.log("Current ticket number response text:", res2Text);
-        $nowServingTicket = parseInt(res2Text, 10);
+        if (res2Text) {
+            $nowServingTicket = parseInt(res2Text, 10);
+        }
     }
 
     function subscribeToEvents() {

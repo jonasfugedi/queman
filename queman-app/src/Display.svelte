@@ -4,7 +4,8 @@
 
     export let serverUrl;
     export let queueId;
-    export let queue;
+
+    let queue;
 
     onMount(async () => {
         console.log('Subscribing')

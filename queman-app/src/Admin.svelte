@@ -5,8 +5,11 @@
 
     const OWNER_ID_KEY = 'ownerId';
     export let serverUrl;
-    export let ownerId;
-    export let queues;
+    export let location; // Provided by router
+
+    let ownerId;
+    let queues;
+    let queueNameInput;
 
     onMount(async () => {
         if (!localStorage.getItem(OWNER_ID_KEY)) {
@@ -19,9 +22,6 @@
         loadQueues();
     });
 
-    export let result;
-    export let name;
-
     async function createQueue() {
         const res = await fetch(`${serverUrl}/queues`, {
             method: 'POST',
@@ -29,13 +29,13 @@
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                name,
+                name: queueNameInput,
                 "owner": ownerId
             })
         })
 
         const json = await res.json()
-        result = JSON.stringify(json)
+        console.log('Result of queue creation', json)
         loadQueues();
     }
 
@@ -52,7 +52,7 @@
     <h2>Owner Id: {ownerId}</h2>
 
     <button on:click={createQueue}>Create</button>
-    <input bind:value={name}/>
+    <input bind:value={queueNameInput}/>
 
     <table width="90%">
         <thead>
@@ -62,6 +62,7 @@
             <th>Size</th>
             <th>Current</th>
             <th>Ticket view</th>
+            <th>Cashier view</th>
         </tr>
         </thead>
         {#if queues}
@@ -69,7 +70,7 @@
             {#each queues as queue}
                 <tr>
                     <td>
-                        <Link to="/queue/{queue.id}"> show</Link>
+                        <Link to="/queue/{queue.id}"> Display </Link>
                     </td>
                     <td> {queue.name} </td>
                     <td> {queue.size} </td>
@@ -78,12 +79,19 @@
                             {queue.current.ticketNumber}
                         {/if}
                     </td>
-                    <Link to="/customer/{queue.id}"> ticket </Link>
+                    <td>
+                        <Link to="/customer/{queue.id}"> Ticket </Link>
+                    </td>
+                    <td>
+                        <Link to="/cashier/{queue.id}"> Cashier </Link>
+                    </td>
                 </tr>
             {/each}
             </tbody>
         {/if}
     </table>
+    <hr/>
+    <div> <i>{location.href}</i> </div>
 </div>
 
 <style>

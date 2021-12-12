@@ -35,7 +35,7 @@
         <Route path="customer/:queueId" let:params>
             <Customer queueId="{params.queueId}" {serverUrl}/>
         </Route>
-        <Route path="cashier" component="{Cashier}" {serverUrl}/>
+        <Route path="cashier/:queueId" component="{Cashier}" {serverUrl}  let:params/>
         <Route path="/">
             <main>
                 <h1>{name}</h1>
@@ -43,7 +43,6 @@
                 <h2>Customer Id: {customerId}</h2>
 
                 <Link to="admin">Admin</Link>
-                <Link to="cashier">Cashier</Link>
 
                 <hr/>
             </main>
