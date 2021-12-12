@@ -61,6 +61,11 @@
         console.log("Got ticket: ", ticket)
         loadQueue();
     }
+
+    function toPrettyDate(timestamp) {
+        var date = new Date(timestamp);
+        return date.toISOString().replace('T',' ').slice(0, 23);
+    }
 </script>
 
 <div>
@@ -88,7 +93,7 @@
             {#each queue.tickets as ticket}
                 <tr>
                     <td> {ticket.ticketNumber} </td>
-                    <td> {ticket.timestamp} </td>
+                    <td> {toPrettyDate(ticket.timestamp)} </td>
                 </tr>
             {/each}
             </tbody>
@@ -108,6 +113,7 @@
     td {
         vertical-align: top;
         text-align: left;
+        font-family: monospace;
     }
 
     th {
