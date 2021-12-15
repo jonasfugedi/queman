@@ -136,6 +136,6 @@
 </script>
 
 <div>
-    <input id="sendBtnAPI" type="button" value="Send (API)" on:click="{ onSendMessageApi }"/>
+    <input id="sendBtnAPI" type="button" value="Test Printer" on:click="{ onSendMessageApi }"/>
 </div>
 
