@@ -1,6 +1,7 @@
 <script>
 
     import {onMount} from "svelte";
+    import {toPrettyDate} from "./util";
 
     export let serverUrl;
     export let queueId;
@@ -60,11 +61,6 @@
         var ticket = await res.json();
         console.log("Got ticket: ", ticket)
         loadQueue();
-    }
-
-    function toPrettyDate(timestamp) {
-        var date = new Date(timestamp);
-        return date.toISOString().replace('T',' ').slice(0, 23);
     }
 </script>
 
