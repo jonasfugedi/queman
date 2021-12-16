@@ -2,6 +2,7 @@
     import {onMount} from 'svelte';
     import {writable} from 'svelte/store';
     import {v4 as uuidv4} from 'uuid';
+    import TicketPrinter from "./TicketPrinter.svelte";
 
     export let serverUrl;
     export let queueId;
@@ -62,7 +63,7 @@
 
 </script>
 
-<div>
+<div align="center">
     {#if !ticket}
         <h1> Getting ticket ... </h1>
     {:else }
@@ -76,6 +77,12 @@
         </h1>
         <div>
             Current number: {$nowServingTicket}
+        </div>
+
+        <br/>
+
+        <div>
+            <TicketPrinter {ticket} />
         </div>
     {/if}
 

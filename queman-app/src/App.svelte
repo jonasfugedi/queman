@@ -6,7 +6,6 @@
     import Cashier from "./Cashier.svelte";
     import Customer from "./Customer.svelte";
     import Display from "./Display.svelte";
-    import PrinterTest from "./PrinterTest.svelte";
 
     export let name;
     export let url = '';
@@ -48,7 +47,6 @@
                 <hr/>
             </main>
         </Route>
-        <PrinterTest/>
     </div>
 </Router>
 

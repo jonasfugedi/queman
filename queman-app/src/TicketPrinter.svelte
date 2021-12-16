@@ -1,12 +1,13 @@
 <script>
     import StarWebPrintBuilder from './starprnt/StarWebPrintBuilder.js';
     import StarWebPrintTrader from './starprnt/StarWebPrintTrader';
+    import {toPrettyDate} from "./util";
 
     const printerUrl = "http://192.168.1.129/StarWebPRNT/SendMessage";
 
-    /***********************************************************/
-    /* print a sample receipt using API in StarWebPrintBuilder */
-    /***********************************************************/
+    export let ticket;
+    let printedTicket = false;
+
     function onSendMessageApi() {
         var builder = new StarWebPrintBuilder();
 
@@ -14,49 +15,24 @@
 
         request += builder.createInitializationElement();
 
-
         request += builder.createTextElement({characterspace: 2});
-
         request += builder.createAlignmentElement({position: 'right'});
         request += builder.createLogoElement({number: 1});
-        request += builder.createTextElement({data: 'TEL 9999-99-9999\n'});
-        request += builder.createAlignmentElement({position: 'left'});
 
+        request += builder.createAlignmentElement({position: 'left'});
         request += builder.createTextElement({data: '\n'});
 
         request += builder.createAlignmentElement({position: 'center'});
-        request += builder.createTextElement({data: 'Thank you for your coming. \n'});
-        request += builder.createTextElement({data: "We hope you'll visit again.\n"});
-        request += builder.createAlignmentElement({position: 'left'});
-
+        request += builder.createTextElement({data: 'Thank you for waiting! \n'});
+        request += builder.createTextElement({data: "Here is your ticket\n"});
         request += builder.createTextElement({data: '\n'});
-
-        request += builder.createTextElement({data: 'Apple                               $20.00\n'});
-        request += builder.createTextElement({data: 'Banana                              $30.00\n'});
-        request += builder.createTextElement({data: 'Grape                               $40.00\n'});
-        request += builder.createTextElement({data: 'Lemon                               $50.00\n'});
-        request += builder.createTextElement({data: 'Orange                              $60.00\n'});
-        request += builder.createTextElement({emphasis: true, data: 'Subtotal                           $200.00\n'});
-        request += builder.createTextElement({data: '\n'});
-
-        request += builder.createTextElement({underline: true, data: 'Tax                                 $10.00\n'});
-        request += builder.createTextElement({underline: false});
-
-        request += builder.createTextElement({emphasis: true});
-        request += builder.createTextElement({width: 2, data: 'Total         $210.00\n'});
-        request += builder.createTextElement({width: 1});
+        request += builder.createTextElement({emphasis: true, data: 'Ticket # ' + ticket.ticketNumber +  '\n'});
         request += builder.createTextElement({emphasis: false});
+        request += builder.createTextElement({data: '\n'});
+        request += builder.createTextElement({data: toPrettyDate(ticket.timestamp) + '\n'});
 
         request += builder.createTextElement({data: '\n'});
-
-        request += builder.createTextElement({data: 'Received                           $300.00\n'});
-
-        request += builder.createTextElement({width: 2, data: 'Change         $90.00\n'});
-        request += builder.createTextElement({width: 1});
-        request += builder.createTextElement({data: '\n'});
-
         request += builder.createTextElement({characterspace: 0});
-
         request += builder.createCutPaperElement({feed: true});
 
         sendMessageApi(request);
@@ -72,11 +48,8 @@
             //hideNowPrinting();
 
             var msg = '- onReceive -\n\n';
-
             msg += 'TraderSuccess : [ ' + response.traderSuccess + ' ]\n';
-
 //      msg += 'TraderCode : [ ' + response.traderCode + ' ]\n';
-
             msg += 'TraderStatus : [ ' + response.traderStatus + ',\n';
 
             if (trader.isCoverOpen({traderStatus: response.traderStatus})) {
@@ -109,25 +82,20 @@
             if (trader.isPaperNearEnd({traderStatus: response.traderStatus})) {
                 msg += '\tPaperNearEnd,\n';
             }
-
             msg += '\tEtbCounter = ' + trader.extractionEtbCounter({traderStatus: response.traderStatus}).toString() + ' ]\n';
-
-//      msg += 'Status : [ ' + response.status + ' ]\n';
-//
-//      msg += 'ResponseText : [ ' + response.responseText + ' ]\n';
-
-            alert(msg);
+            console.log(msg);
+            if (!response.traderSuccess) {
+                alert(msg);
+            } else {
+                printedTicket = true;
+            }
         }
 
         trader.onError = function (response) {
             //hideNowPrinting();
-
             var msg = '- onError -\n\n';
-
             msg += '\tStatus:' + response.status + '\n';
-
             msg += '\tResponseText:' + response.responseText;
-
             alert(msg);
         }
 
@@ -136,6 +104,15 @@
 </script>
 
 <div>
-    <input id="sendBtnAPI" type="button" value="Test Printer" on:click="{ onSendMessageApi }"/>
+    <input id="sendBtnAPI" type="button" value="Print Ticket" on:click="{ onSendMessageApi }"/>
+    {#if printedTicket}
+        <br/><div class="printed">Printed Ticket!</div>
+    {/if}
 </div>
 
+<style>
+    .printed {
+        font-size: smaller;
+        font-variant: all-petite-caps;
+    }
+</style>
