@@ -58,7 +58,6 @@
         } else {
             console.log('Unable to subscribe')
         }
-
     }
 
 </script>
@@ -96,10 +95,6 @@
     .customersTurn {
         background-color: bisque;
         animation: blinker 1s step-start infinite;
-    }
-
-    .waiting {
-        background-color: #f4f4f4;
     }
 
     @keyframes blinker {

@@ -10,21 +10,7 @@
 
     onMount(async () => {
         console.log('Subscribing')
-        const evtSource = new EventSource(`${serverUrl}/subscribe?queueId=${queueId}`);
-        if (evtSource) {
-            console.log(evtSource)
-            evtSource.onmessage = function (event) {
-                console.log('Event: ', event);
-            };
-            evtSource.onerror = function (err) {
-                console.error("EventSource failed:", err);
-            };
-        } else {
-            console.log('Unable to subscribe')
-        }
-        console.log('evtSource: ' + queueId);
-
-        loadQueue();
+        await loadQueue();
     });
 
     async function loadQueue() {
@@ -37,7 +23,6 @@
     async function nextTicket() {
         console.log("Next", queueId)
         const response = await fetch(`${serverUrl}/next?queueId=${queueId}`);
-        // TODO: Check result
         if (!response.ok) {
             if (response.status === 404) {
                 console.log('No customers in queue')
@@ -48,7 +33,7 @@
             const ticket = await response.json();
             console.log("Next ticket: ", ticket);
         }
-        loadQueue();
+        await loadQueue();
     }
 
     let counter = 0;
@@ -60,7 +45,7 @@
         const res = await fetch(`${serverUrl}/ticket?customerId=${customerId}&queueId=${queueId}`);
         var ticket = await res.json();
         console.log("Got ticket: ", ticket)
-        loadQueue();
+        await loadQueue();
     }
 </script>
 
@@ -103,9 +88,6 @@
     {/if}
 
     <hr/>
-    <h2>Events:</h2>
-    <ol id="list">
-    </ol>
 
 </div>
 
