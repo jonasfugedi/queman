@@ -3,6 +3,7 @@
     import {writable} from 'svelte/store';
     import {v4 as uuidv4} from 'uuid';
     import TicketPrinter from "./TicketPrinter.svelte";
+    import {toPrettyDate} from "./util";
 
     export let serverUrl;
     export let queueId;
@@ -79,13 +80,17 @@
             Your number: {ticket.ticketNumber}
         </h1>
         <div>
+            { toPrettyDate(ticket.timestamp).slice(0, 19) }
+        </div>
+        <br/>
+        <div>
             Current number: {$nowServingTicket}
         </div>
 
         <br/>
 
         <div>
-            <TicketPrinter {ticket} />
+            <TicketPrinter {ticket}/>
         </div>
     {/if}
 
