@@ -7,7 +7,7 @@
     export let serverUrl;
     export let queueId;
     let customerId;
-    let ticket;
+    export let ticket;
 
     const CUSTOMER_ID_KEY = 'customerId';
 
@@ -62,6 +62,10 @@
     }
 
 </script>
+
+<svelte:head>
+    <title>Ticket { (ticket ? ('#' + ticket.ticketNumber) : '') }</title>
+</svelte:head>
 
 <div align="center">
     {#if !ticket}

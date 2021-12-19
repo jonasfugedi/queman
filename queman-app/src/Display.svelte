@@ -64,6 +64,10 @@
     }
 </script>
 
+<svelte:head>
+    <title>{(queue ? ('Queue ' + queue.name) : 'Display Q')}</title>
+</svelte:head>
+
 <div>
     <button on:click={loadQueue}> Reload</button>
 

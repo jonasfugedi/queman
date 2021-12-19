@@ -47,6 +47,10 @@
     }
 </script>
 
+<svelte:head>
+    <title> Queue Admin </title>
+</svelte:head>
+
 <div>
     <h1>Admin</h1>
     <h2>Owner Id: {ownerId}</h2>
