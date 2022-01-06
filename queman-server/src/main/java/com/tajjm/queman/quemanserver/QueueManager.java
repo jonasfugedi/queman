@@ -104,6 +104,13 @@ public class QueueManager {
                     }
                 });
                 emitter.onTimeout(emitter::complete);
+                emitter.onError(throwable -> {
+                    log.error("Emitter failed for queue: {}", queueId, throwable);
+                    synchronized (this.emitterMap) {
+                        this.emitterMap.remove(queueId);
+                        cq.setSubscriber(null);
+                    }
+                });
 
                 cq.setSubscriber(ticket -> {
                     SseEmitter.SseEventBuilder event = SseEmitter.event()

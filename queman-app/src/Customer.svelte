@@ -7,8 +7,10 @@
 
     export let serverUrl;
     export let queueId;
-    let customerId;
     export let ticket;
+
+    let customerId;
+    let errorMessage;
 
     const CUSTOMER_ID_KEY = 'customerId';
 
@@ -22,8 +24,15 @@
             customerId = localStorage.getItem(CUSTOMER_ID_KEY);
         }
         console.log('CustomerId: ' + customerId);
-        await takeTicket();
-        subscribeToEvents();
+        try {
+            await takeTicket();
+            if (ticket) {
+                subscribeToEvents();
+            }
+        } catch (e) {
+            console.log('Error getting ticket', e);
+            errorMessage = "Ticket system error"
+        }
     });
 
     async function takeTicket() {
@@ -69,7 +78,11 @@
 
 <div align="center">
     {#if !ticket}
-        <h1> Getting ticket ... </h1>
+        {#if errorMessage}
+            <h1> {errorMessage} </h1>
+        {:else }
+            <h1> Getting ticket ... </h1>
+        {/if}
     {:else }
         {#if (ticket.ticketNumber === $nowServingTicket)}
             <h1 class="customersTurn">
